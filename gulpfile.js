@@ -86,19 +86,19 @@ gulp.task('rev', function(){
     .pipe(gulp.dest('dist/'))
 })
 
-gulp.task('revreplace', ['rev'], function(){
+gulp.task('revreplace', gulp.series('rev', function(){
   return gulp.src(['dist/index.html', 'dist/app.yaml', 'dist/**/*.css'])
     .pipe($.revReplace({
         manifest: gulp.src('dist/rev-manifest.json'),
         replaceInExtensions: ['.html', '.yaml', '.js', '.css']
     }))
     .pipe(gulp.dest('dist/'));
-});
+}));
 
 
 
 /* Alias */
-gulp.task('minify', ['minify-js', 'minify-css', 'minify-html']);
+gulp.task('minify', gulp.series('minify-js', 'minify-css', 'minify-html'));
 gulp.task('build', $.sequence(['minify-js', 'minify-css', 'imagemin'], 'useref', 'revreplace'));
 gulp.task('default', $.sequence('clean', 'copy', 'build'));
 
